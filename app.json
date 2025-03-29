@@ -32,7 +32,13 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      [
+        "expo-font",
+        {
+          "MaterialIcons": "./node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"
+        }
+      ]    
     ],
     "experiments": {
       "typedRoutes": true
