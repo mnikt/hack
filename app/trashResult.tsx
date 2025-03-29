@@ -6,6 +6,10 @@ import * as FileSystem from 'expo-file-system';
 export default function TrashResultScreen() {
     const { photoUri } = useLocalSearchParams<{ photoUri?: string }>();
 
+    useEffect(() => {
+        
+    }, []);
+
     const uploadPhotoToStorage = async (uri: string) => {
         const base64String = await FileSystem.readAsStringAsync(uri, {
           encoding: FileSystem.EncodingType.Base64,
@@ -18,6 +22,31 @@ export default function TrashResultScreen() {
     if (!photoUri) {
       return <View><Text>No image found</Text></View>;
     }
+
+    const sendToVertexAI = async (imageUrl: string) => {
+        const apiUrl = 'https://YOUR_VERTEX_AI_URL';
+
+        const body = JSON.stringify({
+            instances: [
+            {
+                content: imageUrl,  // You can send a URL or base64-encoded string
+            },
+            ],
+        });
+        
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer YOUR_ACCESS_TOKEN', // Use your Google Cloud API key or OAuth token
+            },
+            body,
+        });
+        
+        const result = await response.json();
+        console.log('Vertex AI Analysis:', result);
+    };
+      
   
     return (
       <View style={styles.container}>
