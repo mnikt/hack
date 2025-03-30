@@ -35,7 +35,7 @@ export default function TrashScreen() {
         <CameraView style={styles.camera} facing={'back'} ref={cameraRef}>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={takePhoto}>
-              <Text style={styles.text}>Sprawdź smiecia xd</Text>
+              <Text style={styles.text}>Sprawdź smiecia</Text>
             </TouchableOpacity>
           </View>
         </CameraView>

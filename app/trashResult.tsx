@@ -2,34 +2,47 @@ import { useState, useEffect, useRef } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
+// import serviceAccountKey from '../magnetic-guild-437016-c0-b9ec372486a0.json';
+// import { GoogleAuth } from 'google-auth-library';
+
+// const getAccessToken = async (): Promise<string | null> => {
+//     const auth = new GoogleAuth({
+//         credentials: serviceAccountKey,
+//         scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+//     });
+
+//     const client = await auth.getClient();
+//     const token = await client.getAccessToken();
+//     console.log(token);
+//     return token.token || null;
+// };
 
 export default function TrashResultScreen() {
     const { photoUri } = useLocalSearchParams<{ photoUri?: string }>();
+    const [result, setResult] = useState<string>("");
 
     useEffect(() => {
-        
-    }, []);
+        if (!photoUri) return;
+        const base64String = FileSystem.readAsStringAsync(photoUri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
 
-    const uploadPhotoToStorage = async (uri: string) => {
-        const base64String = await FileSystem.readAsStringAsync(uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-        // Now, base64String is ready to send to Google Cloud Storage
-        console.log('Base64 String: ', base64String);
-        // You can now upload this base64 string to your Google Cloud Storage or send it to Vertex AI
-      };
+        sendToVertexAI(base64String);
+
+    }, [photoUri]);
       
     if (!photoUri) {
       return <View><Text>No image found</Text></View>;
     }
 
-    const sendToVertexAI = async (imageUrl: string) => {
-        const apiUrl = 'https://YOUR_VERTEX_AI_URL';
+    const sendToVertexAI = async (encoded: Promise<string>) => {
+        const apiUrl = 'https://europe-central2-aiplatform.googleapis.com/v1/projects/magnetic-guild-437016-c0/locations/europe-central2/endpoints/';
 
         const body = JSON.stringify({
             instances: [
             {
-                content: imageUrl,  // You can send a URL or base64-encoded string
+                // content: await encoded
+                prompt: "Co jest na zdjęciu?"
             },
             ],
         });
@@ -38,18 +51,21 @@ export default function TrashResultScreen() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer YOUR_ACCESS_TOKEN', // Use your Google Cloud API key or OAuth token
+                'Authorization': `Bearer ${"AAAA"}`,
             },
             body,
         });
+        console.log(await response.text());
+        setResult(response.statusText);
+
         
-        const result = await response.json();
-        console.log('Vertex AI Analysis:', result);
+        // const result = await response.json();
+        // setResult(result);
     };
-      
   
     return (
       <View style={styles.container}>
+        <Text>{result}</Text>
         <Image source={{ uri: photoUri as string }} style={styles.image} />
       </View>
     );
