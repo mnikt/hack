@@ -98,7 +98,7 @@ export default function HomeScreen() {
                     <Text style={styles.tileLabel}>Twój Eko-Buddy</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.tile} onPress={() => router.push('/smartBinScan')}>
+                <TouchableOpacity style={styles.tile} onPress={() => router.push('/trash')}>
                     <Image
                         source={require('../assets/images/segregacja.png')}
                         style={styles.tileIcon}

@@ -33,8 +33,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.3)',
         width: '100%',
         height: '100%',
-        paddingTop: 554,  // przesunięcie w dół
-        paddingLeft: 51, // przesunięcie w prawo
+        paddingTop: 490,  // przesunięcie w dół
+        paddingLeft: 49, // przesunięcie w prawo
     },
 
     linkText: {
