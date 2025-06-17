@@ -9,7 +9,6 @@ import {
     ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import SvgUri from 'react-native-svg-uri';
 
 export default function HomeScreen() {
     const router = useRouter();
@@ -143,7 +142,7 @@ export default function HomeScreen() {
 
             {/* Przykładowe przyciski z poprzedniego kodu */}
             <Text style={styles.debugTitle}>Debug Buttons:</Text>
-            <Button title="Go to AR" onPress={() => router.push('/wel')} />
+            <Button title="Go to AR" onPress={() => router.push('/ar')} />
             <Button title="Go to Trash" onPress={() => router.push('/trash')} />
         </ScrollView>
     );
