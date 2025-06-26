@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     View,
     Text,
@@ -8,10 +8,23 @@ import {
     Image,
     ScrollView,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+
+import {useRouter} from 'expo-router';
+import {User, getUser} from "@/logic/user";
 
 export default function HomeScreen() {
     const router = useRouter();
+    const [user, setUser] = useState<User>();
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const user = await getUser();
+            if (user === null) router.push("/register");
+            else setUser(user);
+        };
+
+        fetchUser();
+    }, []);
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -31,20 +44,15 @@ export default function HomeScreen() {
                         style={styles.logoImage}
                         resizeMode="contain"
                     />
-                    {/* Lub ewentualnie <Text style={styles.logoText}>GROWIE</Text> */}
                 </View>
 
                 {/* Prawa kolumna - punkty */}
                 <View style={styles.rightColumn}>
                     <Text style={styles.points}>
-                        {/*Twoje punkty:{' '}<Text style={{ fontWeight: 'bold', color: GREEN }}>27</Text>*/}
-                        {/*            <Button title="Twoje punkty: 27" onPress={() => router.push('/ar')} color={WHITE} />*/}
                         <TouchableOpacity
                           style={styles.customButton}
                           onPress={() => router.push('/ar')}
                         >
-                          {/*<Text style={styles.customButtonText}>Twoje punkty:</Text>*/}
-                          {/*<Text style={styles.customButtonText2}>27</Text>*/}
                             <Text style={styles.customButtonText}>
                               Twoje punkty: <Text style={styles.customButtonText2}>27</Text>
                             </Text>
@@ -56,7 +64,7 @@ export default function HomeScreen() {
             {/* Sekcja powitalna */}
             <View style={styles.headerSection}>
                 <View style={{flex: 1}}>
-                    <Text style={styles.mainTitle}>Cześć!</Text>
+                    <Text style={styles.mainTitle}>Cześć {user.name}!</Text>
                     <Text style={styles.subtitle}>Nie ma Cię w biurze</Text>
                     <Text style={styles.smallInfo}>Twój Growie ma drzemkę...</Text>
                 </View>
@@ -67,10 +75,8 @@ export default function HomeScreen() {
                     resizeMode="contain"
                 />
             </View>
-
-            {/* Daily Growie Challenge */}
             <View style={styles.challengeBox}>
-                <Text style={styles.challengeTitle}>Daily Growie Challenge</Text>
+                <Text style={styles.challengeTitle}>Daily Growie Quiz</Text>
                 <Text style={styles.quizQuestion}>
                     Czy potrafisz dobrze segregować?{'\n'}
                     Gdzie wyrzucisz karton po mleku z plastikową zakrętką i resztką płynu w środku?
@@ -117,7 +123,7 @@ export default function HomeScreen() {
                     <Text style={styles.tileLabel}>Wydarzenia</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.tile} onPress={() => router.push('/spolecznosc')}>
+                <TouchableOpacity style={styles.tile} onPress={() => router.push('/challenges')}>
                     <Image
                         source={require('../assets/images/ranking.png')}
                         style={styles.tileIcon}
