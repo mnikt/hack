@@ -15,6 +15,7 @@ import {User, getUser} from "@/logic/user";
 export default function HomeScreen() {
     const router = useRouter();
     const [user, setUser] = useState<User>();
+    const [points, setPoints] = useState(0);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -22,9 +23,27 @@ export default function HomeScreen() {
             if (user === null) router.push("/register");
             else setUser(user);
         };
-
         fetchUser();
     }, []);
+
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchPoints = () => {
+            if (user?.id) {
+                fetch(`http://10.9.0.174:8000/gamification/points/api`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authentication': user.id.toString()
+                    }
+                })
+                .then(response => response.json())
+                .then(data => setPoints(data.total))
+                .catch(error => console.error('Error fetching points:', error));
+            }
+        };
+        fetchPoints();
+    }, [user]);
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -51,10 +70,10 @@ export default function HomeScreen() {
                     <Text style={styles.points}>
                         <TouchableOpacity
                           style={styles.customButton}
-                          onPress={() => router.push('/ar')}
+                          onPress={() => router.push('/points')}
                         >
                             <Text style={styles.customButtonText}>
-                              Twoje punkty: <Text style={styles.customButtonText2}>27</Text>
+                              Twoje punkty: <Text style={styles.customButtonText2}>{points}</Text>
                             </Text>
                         </TouchableOpacity>
                     </Text>
@@ -64,7 +83,7 @@ export default function HomeScreen() {
             {/* Sekcja powitalna */}
             <View style={styles.headerSection}>
                 <View style={{flex: 1}}>
-                    <Text style={styles.mainTitle}>Cześć {user.name}!</Text>
+                    <Text style={styles.mainTitle}>Cześć {user?.name}!</Text>
                     <Text style={styles.subtitle}>Nie ma Cię w biurze</Text>
                     <Text style={styles.smallInfo}>Twój Growie ma drzemkę...</Text>
                 </View>
@@ -145,11 +164,6 @@ export default function HomeScreen() {
                 </View>
                 <Text style={styles.progressCount}>3/10 dni</Text>
             </View>
-
-            {/* Przykładowe przyciski z poprzedniego kodu */}
-            <Text style={styles.debugTitle}>Debug Buttons:</Text>
-            <Button title="Go to AR" onPress={() => router.push('/ar')} />
-            <Button title="Go to Trash" onPress={() => router.push('/trash')} />
         </ScrollView>
     );
 }

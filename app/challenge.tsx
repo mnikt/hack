@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, Image, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity, Modal} from 'react-native';
-import {router, useLocalSearchParams} from 'expo-router';
+import {useLocalSearchParams} from 'expo-router';
 import {FontAwesome} from '@expo/vector-icons';
+import {getUser} from "@/logic/user";
 
 interface Challenge {
     id: string;
@@ -13,8 +14,11 @@ interface Challenge {
     type: string;
     period: string;
     points: number;
-    joined: boolean;
-    completed: boolean;
+    user_challenge: {
+        joined: boolean;
+        completed: boolean;
+        date: string;
+    }
 }
 
 export default function ChallengePage() {
@@ -29,36 +33,41 @@ export default function ChallengePage() {
     }, [id]);
 
     const fetchChallenge = async () => {
-        try {
-            const response = await fetch(`http://10.9.0.174:8000/gamification/challenges/api/${id}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch challenge details');
-            }
-            const data = await response.json();
-            setChallenge(data);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'An error occurred');
-        } finally {
+        const user = await getUser();
+        if (!user?.id) {
+            setError('User not authenticated');
             setLoading(false);
+            return;
         }
+
+        await fetch(`http://10.9.0.174:8000/gamification/challenges/api/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authentication': user.id.toString()
+            }}
+        ).then(response => response.json()).then(data => {
+            setChallenge(data);
+        }).catch(error => setError(error.message)).finally(() => setLoading(false));
     };
 
     const joinChallenge = async (join: boolean) => {
+        const user = await getUser();
+        if (!user?.id) {
+            setError('User not authenticated');
+            setLoading(false);
+            return;
+        }
+
         if (join && challenge) {
-            try {
-                const response = await fetch(`http://10.9.0.174:8000/gamification/challenges/api/${challenge.id}/join`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to join challenge');
+            fetch(`http://10.9.0.174:8000/gamification/challenges/api/${challenge.id}/join`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authentication': user.id.toString()
                 }
-                setChallenge({...challenge, joined: true});
-            } catch (err) {
-                console.error('Error joining challenge:', err);
-            }
+            }).then(response => {
+                if (response.ok) setChallenge({...challenge, user_challenge: { joined: true, completed: false, date: '' }});
+            }).catch(error => setError(error.message)).finally(() => setLoading(false));
         }
         setModalVisible(false);
     };
@@ -102,8 +111,9 @@ export default function ChallengePage() {
                     <Text style={styles.detailsText}>Points: {challenge.points}</Text>
                     <Text style={styles.detailsText}>Start Date: {challenge.start_date}</Text>
                     <Text style={styles.detailsText}>End Date: {challenge.end_date}</Text>
+                    <Text style={styles.detailsText}>Joined: {challenge.user_challenge.joined ? "TAK" : "NIE"} </Text>
                 </View>
-                {challenge.joined ?
+                {challenge.user_challenge.joined ?
                     <View style={[styles.joinButton, styles.joinedButton]}>
                         <FontAwesome name="check-circle" size={20} color="#fff" style={styles.joinedIcon}/>
                         <Text style={styles.joinButtonText}>Joined the challenge</Text>

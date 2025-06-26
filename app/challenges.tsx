@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, FlatList, ActivityIndicator, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {useRouter} from 'expo-router';
+import {getUser} from "@/logic/user";
 
 interface Challenge {
     id: string;
@@ -25,18 +26,21 @@ export default function ChallengesPage() {
     }, []);
 
     const fetchChallenges = async () => {
-        try {
-            const response = await fetch('http://10.9.0.174:8000/gamification/challenges/api');
-            if (!response.ok) {
-                throw new Error('Failed to fetch challenges');
-            }
-            const data = await response.json();
-            setChallenges(data);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'An error occurred');
-        } finally {
+        const user = await getUser();
+        if (!user?.id) {
+            setError('User not authenticated');
             setLoading(false);
+            return;
         }
+        await fetch(`http://10.9.0.174:8000/gamification/challenges/api`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authentication': user.id.toString()
+            }}
+        ).then(response => response.json()).then(data => {
+            console.log(data)
+            setChallenges(data);
+        }).catch(error => setError(error.message)).finally(() => setLoading(false));
     };
 
     if (loading) {

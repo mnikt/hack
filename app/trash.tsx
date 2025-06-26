@@ -16,12 +16,18 @@ export default function TrashScreen() {
     }
   
     if (!permission.granted) {
-      // Camera permissions are not granted yet.
       return (
-        <View style={styles.container}>
-          <Text style={styles.message}>We need your permission to show the camera</Text>
-          <Button onPress={requestPermission} title="grant permission" />
-        </View>
+
+          <View style={styles.permissionContainer}>
+              <Text style={styles.permissionTitle}>📸 Potrzebne uprawnienia</Text>
+              <Text style={styles.message}>Aby uzyskać dostęp do inteligentnego skanera udziel dostępu do aparatu.</Text>
+              <TouchableOpacity
+                  style={styles.permissionButton}
+                  onPress={requestPermission}
+              >
+                  <Text style={styles.permissionButtonText}>Udziel dostęp</Text>
+              </TouchableOpacity>
+          </View>
       );
     }
   
@@ -79,10 +85,36 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  message: {
-    textAlign: 'center',
-    paddingBottom: 10,
-  },
+    permissionContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    permissionTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 16,
+        textAlign: 'center',
+    },
+    message: {
+        textAlign: 'center',
+        paddingBottom: 24,
+        fontSize: 16,
+        color: '#666',
+    },
+    permissionButton: {
+        backgroundColor: '#2196F3',
+        paddingHorizontal: 32,
+        paddingVertical: 12,
+        borderRadius: 8,
+        elevation: 3,
+    },
+    permissionButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
   camera: {
     flex: 1,
   },
