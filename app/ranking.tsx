@@ -3,7 +3,7 @@ import {View, Text, FlatList, ActivityIndicator, StyleSheet} from 'react-native'
 import {getUser} from "@/logic/user";
 
 interface RankingUser {
-    id: string;
+    id: number;
     name: string;
     points: number;
 }
@@ -12,7 +12,7 @@ export default function RankingView() {
     const [users, setUsers] = useState<RankingUser[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [currentUserId, setCurrentUserId] = useState<string>('');
+    const [currentUserId, setCurrentUserId] = useState<number>(0);
 
     useEffect(() => {
         fetchRanking();
@@ -25,7 +25,7 @@ export default function RankingView() {
                 setLoading(false);
                 return;
             }
-            setCurrentUserId(user.id.toString());
+            setCurrentUserId(user.id);
 
             fetch('http://10.9.0.174:8000/gamification/ranking/api', {
                 headers: {
@@ -61,17 +61,21 @@ export default function RankingView() {
             </View>
         );
     }
-
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Ranking</Text>
             <FlatList
                 data={users}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={({item, index}) => (
-                    <View style={[styles.rankingItem, item.id === currentUserId && styles.currentUserItem]}>
+                    <View style={[
+                        styles.rankingItem,
+                        index === 0 && styles.goldPosition,
+                        index === 1 && styles.silverPosition,
+                        index === 2 && styles.bronzePosition,
+                    ]}>
                     <Text style={styles.position}>{index + 1}</Text>
-                        <Text style={styles.name}>{item.name}</Text>
+                        <Text style={[styles.name, item.id === currentUserId && styles.currentUserItem]}>{item.name}</Text>
                         <Text style={styles.points}>{item.points} pts</Text>
                     </View>
                 )}
@@ -117,6 +121,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     currentUserItem: {
-        backgroundColor: '#e6f3ff',
+        fontWeight: "bold",
+    },
+    goldPosition: {
+        backgroundColor: '#FFD700',
+    },
+    silverPosition: {
+        backgroundColor: '#C0C0C0',
+    },
+    bronzePosition: {
+        backgroundColor: '#CD7F32',
     },
 });

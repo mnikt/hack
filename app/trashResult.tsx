@@ -1,16 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 
 export default function TrashResultScreen(props: {text: string, imageUri: string}): JSX.Element {
   const { width, height } = useWindowDimensions();
-  // const { text, imageUri } = useLocalSearchParams();
 
   return (
     <View style={[styles.container, { width, height }]}> 
       <Image 
-        source={{ uri: props.imageUri as string }} // Replace with your image URL
+        source={{ uri: props.imageUri as string }}
         style={[styles.backgroundImage, { width, height }]} 
       />
       <Text style={styles.centeredText}>{props.text}</Text>
