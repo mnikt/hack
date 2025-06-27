@@ -18,7 +18,7 @@ export default function QRScanner() {
         return (
             <View style={styles.permissionContainer}>
                 <Text style={styles.permissionTitle}>📸 Potrzebne uprawnienia</Text>
-                <Text style={styles.message}>Aby uzyskać dostęp do inteligentnego skanera udziel dostępu do aparatu.</Text>
+                <Text style={styles.message}>Aby uzyskać dostęp do skanera QR udziel dostępu do aparatu.</Text>
                 <TouchableOpacity
                     style={styles.permissionButton}
                     onPress={requestPermission}

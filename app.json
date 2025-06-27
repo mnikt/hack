@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/kotek.png",
+        "foregroundImage": "./assets/images/kotek_icon.png",
         "backgroundColor": "#006600"
       },
       "package": "com.anonymous.hack"

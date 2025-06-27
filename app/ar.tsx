@@ -1,16 +1,13 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {
     ViroARScene,
     ViroARPlane,
-    ViroBox,
-    ViroTrackingReason,
-    ViroTrackingState,
     ViroARSceneNavigator,
-    ViroText,
-    ViroScene, ViroVRSceneNavigator, Viro3DObject
+    ViroText, Viro3DObject, ViroAmbientLight, ViroNode
 } from '@reactvision/react-viro';
 import {useCameraPermissions} from "expo-camera";
+import {getUser} from "@/logic/user";
 
 
 export default function ARScreen() {
@@ -24,7 +21,7 @@ export default function ARScreen() {
         return (
             <View style={styles.permissionContainer}>
                 <Text style={styles.permissionTitle}>📸 Potrzebne uprawnienia</Text>
-                <Text style={styles.message}>Aby uzyskać dostęp do inteligentnego skanera udziel dostępu do aparatu.</Text>
+                <Text style={styles.message}>Aby uzyskać dostęp do funkcjonalości AR udziel dostępu do aparatu.</Text>
                 <TouchableOpacity
                     style={styles.permissionButton}
                     onPress={requestPermission}
@@ -47,22 +44,32 @@ export default function ARScreen() {
 }
 
 const MyARScene = () => {
-    const handleTrackingUpdated = (state: ViroTrackingState, reason: ViroTrackingReason) => {
-        console.log("Tracking updated:", state, reason);
-    };
+    const [user, setUser] = useState<string>("");
 
-    return <ViroARScene>
-        <Viro3DObject
-            resources={[
-                require('../assets/models/cat/cat.png'),
-                // require('../assets/models/cat/cat.mtl'),
-            ]}
-            source={require('../assets/models/cat/cat.obj')}
+    useEffect(() => {
+        getUser().then(user => setUser(user?.name || ""));
+    }, []);
 
-            type="OBJ"
-            position={[0.0, 0.0, -1]}
-            scale={[0.1, 0.1, 0.1]}
-        />
+    console.log(user);
+
+    return <ViroARScene dragType={"FixedToPlane"}>
+        <ViroAmbientLight color="#FFFFFF"/>
+        <ViroARPlane minHeight={0.5} minWidth={0.5} alignment={"Horizontal"}>
+            <ViroNode scale={[0.1, 0.1, 0.1]}>
+                <Viro3DObject
+                    resources={[
+                        require('../assets/models/cat/sleeping_cat_0627165553_texture.png'),
+                        require('../assets/models/cat/sleeping_cat_0627165553_texture.mtl'),
+                    ]}
+                    source={require('../assets/models/cat/sleeping_cat_0627165553_texture.obj')}
+                    type="OBJ"
+                    position={[0, 0, -2]}
+                    scale={[0.3, 0.3, 0.3]}
+                />
+                <ViroText text={user} color={"#16aa11"} position={[0, 0.7, -2]} transformBehaviors={"billboard"} />
+                <ViroText text="Poziom 1" color={"#da2121"} position={[0, 0.5, -2]} transformBehaviors={"billboard"} />
+            </ViroNode>
+        </ViroARPlane>
     </ViroARScene>
 }
 
