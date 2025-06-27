@@ -79,9 +79,7 @@ export default function HomeScreen() {
             <View style={styles.topBar}>
                 {/* Lewa kolumna - hamburger */}
                 <View style={styles.leftColumn}>
-                    <TouchableOpacity onPress={() => { /* otwórz menu */ }}>
-                        <Text style={styles.hamburger}>≡</Text>
-                    </TouchableOpacity>
+                    <Text>Trzeba poprawić ten górny element :)</Text>
                 </View>
 
                 {/* Środkowa kolumna - wycentrowane logo */}
@@ -100,7 +98,7 @@ export default function HomeScreen() {
                           style={styles.customButton}
                           onPress={() => router.push('/points')}
                         >
-                            <Text style={styles.customButtonText}>
+                        <Text style={styles.customButtonText}>
                               <Text style={styles.customButtonText2}>{points}</Text> punktów
                             </Text>
                         </TouchableOpacity>
@@ -130,7 +128,7 @@ export default function HomeScreen() {
                     <Image
                         source={require('../assets/images/kotek.png')}
                         style={styles.tileIcon}
-                        resizeMode="stretch"
+                        resizeMode="contain"
                     />
                     <Text style={styles.tileLabel}>Twój Eko-Buddy</Text>
                 </TouchableOpacity>
@@ -148,7 +146,7 @@ export default function HomeScreen() {
             <View style={styles.tileRow}>
                 <TouchableOpacity style={styles.tile} onPress={() => router.push('/challenges')}>
                     <Image
-                        source={require('../assets/images/kalendarz.png')}
+                        source={require('../assets/images/wyzwanie.png')}
                         style={styles.tileIcon}
                         resizeMode="contain"
                     />
@@ -161,7 +159,7 @@ export default function HomeScreen() {
                         style={styles.tileIcon}
                         resizeMode="contain"
                     />
-                    <><Text style={styles.tileLabel}>Społeczność & Ranking</Text></>
+                    <><Text style={styles.tileLabel}>Ranking</Text></>
                 </TouchableOpacity>
             </View>
 
@@ -177,7 +175,7 @@ export default function HomeScreen() {
 
                 <TouchableOpacity style={styles.tile} onPress={() => router.push('/qrScanner')}>
                     <Image
-                        source={require('../assets/images/ranking.png')}
+                        source={require('../assets/images/qr.png')}
                         style={styles.tileIcon}
                         resizeMode="contain"
                     />
@@ -229,10 +227,9 @@ const styles = StyleSheet.create({
     },
    rightColumn: {
      flex: 1,
-     alignItems: 'center',      // <--- ustawia zawartość do prawej
-     justifyContent: 'center',    // ewentualnie: środek w pionie
-     paddingRight: 30,
-
+       alignItems: 'flex-end',
+       justifyContent: 'center',
+       paddingRight: 30,
    },
     hamburger: {
         fontSize: 24,
