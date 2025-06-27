@@ -1,11 +1,6 @@
 import React from 'react';
 import { View, Image, StyleSheet, PermissionsAndroid, Platform } from 'react-native';
-// import { ViroARScene, ViroARPlane, ViroBox, ViroTrackingReason, ViroTrackingState, ViroARSceneNavigator } from '@reactvision/react-viro';
-
-// Ukrycie nagłówka w expo-router
-export const screenOptions = {
-    headerShown: false,
-};
+import { ViroARScene, ViroARPlane, ViroBox, ViroTrackingReason, ViroTrackingState, ViroARSceneNavigator } from '@reactvision/react-viro';
 
 
 async function requestCameraPermission() {
@@ -33,11 +28,11 @@ export default function ARScreen() {
 
     return (
         <View style={{ flex: 1 }}>
-        {/*<ViroARSceneNavigator*/}
-        {/*    autofocus={true}*/}
-        {/*    initialScene={{ scene: MyARScene }}*/}
-        {/*    style={{ flex: 1 }}*/}
-        {/*/>*/}
+        <ViroARSceneNavigator
+            autofocus={true}
+            initialScene={{ scene: MyARScene }}
+            style={{ flex: 1 }}
+        />
         </View>
     );
 }

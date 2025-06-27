@@ -88,7 +88,7 @@ export default function HomeScreen() {
                 {/* Środkowa kolumna - wycentrowane logo */}
                 <View style={styles.centerColumn}>
                     <Image
-                        source={require('../assets/images/logotyp.png')}
+                        source={require('../assets/images/growie_logo.png')}
                         style={styles.logoImage}
                         resizeMode="contain"
                     />
@@ -129,7 +129,7 @@ export default function HomeScreen() {
             <View style={styles.tileRow}>
                 <TouchableOpacity style={styles.tile} onPress={() => router.push('/ar')}>
                     <Image
-                        source={require('../assets/images/BIGkote.png')}
+                        source={require('../assets/images/kotek.png')}
                         style={styles.tileIcon}
                         resizeMode="stretch"
                     />
@@ -156,7 +156,7 @@ export default function HomeScreen() {
                     <Text style={styles.tileLabel}>Wyzwania</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.tile} onPress={() => router.push('/challenges')}>
+                <TouchableOpacity style={styles.tile} onPress={() => router.push('/ranking')}>
                     <Image
                         source={require('../assets/images/ranking.png')}
                         style={styles.tileIcon}

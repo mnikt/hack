@@ -4,7 +4,7 @@
     "slug": "hack",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logotyp.png",
+    "icon": "./assets/images/growie_logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -28,7 +28,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/growie_logo.png"
     },
     "plugins": [
       "@reactvision/react-viro",
@@ -36,7 +36,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logotyp.png",
+          "image": "./assets/images/growie_logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
