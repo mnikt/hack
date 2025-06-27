@@ -37,7 +37,7 @@ export default function QRScanner() {
                 return;
             }
 
-            const response = await fetch(`http://10.9.0.174:8000/gamification/challenges/api/${challengeId}/claim`, {
+            const response = await fetch(`http://20.86.144.2:8000/gamification/challenges/api/${challengeId}/claim`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

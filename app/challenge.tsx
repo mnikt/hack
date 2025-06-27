@@ -40,7 +40,7 @@ export default function ChallengePage() {
             return;
         }
 
-        await fetch(`http://10.9.0.174:8000/gamification/challenges/api/${id}`, {
+        await fetch(`http://20.86.144.2:8000/gamification/challenges/api/${id}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authentication': user.id.toString()
@@ -59,7 +59,7 @@ export default function ChallengePage() {
         }
 
         if (join && challenge) {
-            fetch(`http://10.9.0.174:8000/gamification/challenges/api/${challenge.id}/join`, {
+            fetch(`http://20.86.144.2:8000/gamification/challenges/api/${challenge.id}/join`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

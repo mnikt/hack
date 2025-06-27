@@ -19,7 +19,7 @@ export default function QuizView(props: {quiz: Quiz, refresh: () => void}) {
         const user = await getUser();
         if (!user?.id) return;
 
-        fetch(`http://10.9.0.174:8000/gamification/quizzes/api/${props.quiz.id}/answer`, {
+        fetch(`http://20.86.144.2:8000/gamification/quizzes/api/${props.quiz.id}/answer`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

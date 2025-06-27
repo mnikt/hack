@@ -31,7 +31,7 @@ export default function PointsScreen() {
         }
 
         try {
-            const response = await fetch(`http://10.9.0.174:8000/gamification/points/api`, {
+            const response = await fetch(`http://20.86.144.2:8000/gamification/points/api`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authentication': user.id.toString()

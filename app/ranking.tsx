@@ -27,7 +27,7 @@ export default function RankingView() {
             }
             setCurrentUserId(user.id);
 
-            fetch('http://10.9.0.174:8000/gamification/ranking/api', {
+            fetch('http://20.86.144.2:8000/gamification/ranking/api', {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authentication': user.id.toString()

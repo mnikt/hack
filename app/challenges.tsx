@@ -32,7 +32,7 @@ export default function ChallengesPage() {
             setLoading(false);
             return;
         }
-        await fetch(`http://10.9.0.174:8000/gamification/challenges/api`, {
+        await fetch(`http://20.86.144.2:8000/gamification/challenges/api`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authentication': user.id.toString()

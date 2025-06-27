@@ -31,7 +31,7 @@ export default function EventPage() {
             setLoading(false);
             return;
         }
-        await fetch(`http://10.9.0.174:8000/gamification/events/api/${id}`, {
+        await fetch(`http://20.86.144.2:8000/gamification/events/api/${id}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authentication': user.id.toString()
@@ -47,7 +47,7 @@ export default function EventPage() {
         if (!user?.id || !event) return;
 
         try {
-            const response = await fetch(`http://10.9.0.174:8000/gamification/events/api/${event.id}/join`, {
+            const response = await fetch(`http://20.86.144.2:8000/gamification/events/api/${event.id}/join`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

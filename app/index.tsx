@@ -36,7 +36,7 @@ export default function HomeScreen() {
         const fetchQuiz = async () => {
             if (!user?.id) return;
             try {
-                const response = await fetch(`http://10.9.0.174:8000/gamification/quizzes/api`, {
+                const response = await fetch(`http://20.86.144.2:8000/gamification/quizzes/api`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authentication': user.id.toString()
@@ -61,7 +61,7 @@ export default function HomeScreen() {
 
     const fetchPoints = () => {
         if (user?.id) {
-            fetch(`http://10.9.0.174:8000/gamification/points/api`, {
+            fetch(`http://20.86.144.2:8000/gamification/points/api`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authentication': user.id.toString()

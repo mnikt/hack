@@ -45,7 +45,7 @@ export default function TrashScreen() {
             formData.append('photo', base64);
 
             try{
-              fetch('http://10.9.0.174:8000/scaner/', {
+              fetch('http://20.86.144.2:8000/scaner/', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'multipart/form-data',
