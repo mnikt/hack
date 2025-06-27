@@ -50,18 +50,16 @@ const MyARScene = () => {
         getUser().then(user => setUser(user?.name || ""));
     }, []);
 
-    console.log(user);
-
     return <ViroARScene dragType={"FixedToPlane"}>
         <ViroAmbientLight color="#FFFFFF"/>
         <ViroARPlane minHeight={0.5} minWidth={0.5} alignment={"Horizontal"}>
             <ViroNode scale={[0.1, 0.1, 0.1]}>
                 <Viro3DObject
                     resources={[
-                        require('../assets/models/cat/sleeping_cat_0627165553_texture.png'),
-                        require('../assets/models/cat/sleeping_cat_0627165553_texture.mtl'),
+                        require('../assets/models/cat/sleeping_cat_texture.png'),
+                        require('../assets/models/cat/sleeping_cat.mtl')
                     ]}
-                    source={require('../assets/models/cat/sleeping_cat_0627165553_texture.obj')}
+                    source={require('../assets/models/cat/sleeping_cat_model.obj')}
                     type="OBJ"
                     position={[0, 0, -2]}
                     scale={[0.3, 0.3, 0.3]}
