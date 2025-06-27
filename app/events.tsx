@@ -1,44 +1,48 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, Text, FlatList, ActivityIndicator, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import {useRouter} from 'expo-router';
+import {useFocusEffect, useRouter} from 'expo-router';
 import {getUser} from "@/logic/user";
 
-interface Challenge {
+
+interface Event {
     id: string;
     name: string;
     description: string;
     image: string;
-    start_date: string;
-    end_date: string;
-    type: string;
-    period: string;
-    points: number;
+    date: string;
+    limit: number;
+    user_joined: boolean;
+    joined_number: number;
 }
 
-export default function ChallengesPage() {
-    const [challenges, setChallenges] = useState<Challenge[]>([]);
+export default function EventsScreen() {
+    const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
-    useEffect(() => {
-        fetchChallenges();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            fetchEvents();
+        }, [])
+    );
 
-    const fetchChallenges = async () => {
+
+    const fetchEvents = async () => {
         const user = await getUser();
         if (!user?.id) {
             setError('User not authenticated');
             setLoading(false);
             return;
         }
-        await fetch(`http://10.9.0.174:8000/gamification/challenges/api`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authentication': user.id.toString()
-            }}
+        await fetch(`http://10.9.0.174:8000/gamification/events/api`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authentication': user.id.toString()
+                }
+            }
         ).then(response => response.json()).then(data => {
-            setChallenges(data);
+            setEvents(data);
         }).catch(error => setError(error.message)).finally(() => setLoading(false));
     };
 
@@ -60,18 +64,26 @@ export default function ChallengesPage() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Wyzwania</Text>
+            <Text style={styles.title}>Wydarzenia</Text>
             <FlatList
-                data={challenges}
+                data={events}
                 keyExtractor={(item) => item.id}
                 renderItem={({item}) => (
-                    <TouchableOpacity onPress={() => router.push(`/challenge?id=${item.id}`)}>
-                        <View style={styles.challengeItem}>
+                    <TouchableOpacity onPress={() => router.push(`/event?id=${item.id}`)}>
+                        <View style={styles.eventItem}>
                             <Image
                                 source={{uri: item.image}}
-                                style={styles.challengeImage}
+                                style={styles.eventImage}
                             />
-                            <Text style={styles.challengeTitle}>{item.name}</Text>
+                            <Text style={styles.eventTitle}>{item.name}</Text>
+                            <View style={styles.eventInfo}>
+                                <Text style={styles.eventInfoText}>
+                                    Uczestnicy: {item.joined_number}/{item.limit}
+                                </Text>
+                                <Text style={[styles.eventStatus, item.user_joined && styles.eventJoined]}>
+                                    {item.user_joined ? 'Dołączono' : 'Nie dołączono'}
+                                </Text>
+                            </View>
                         </View>
                     </TouchableOpacity>
                 )}
@@ -90,7 +102,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 16,
     },
-    challengeItem: {
+    eventItem: {
         padding: 16,
         borderRadius: 8,
         backgroundColor: '#fff',
@@ -104,23 +116,38 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
-    challengeTitle: {
+    eventTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-    },
-    challengeDescription: {
-        marginTop: 8,
-        color: '#666',
     },
     errorText: {
         color: 'red',
         fontSize: 16,
         textAlign: 'center',
     },
-    challengeImage: {
+    eventImage: {
         width: '100%',
         height: 200,
         borderRadius: 8,
         marginBottom: 8,
     },
+    eventInfo: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 8,
+    },
+    eventInfoText: {
+        fontSize: 14,
+        color: '#666',
+    },
+    eventStatus: {
+        fontSize: 14,
+        color: '#666',
+    },
+    eventJoined: {
+        color: '#4CAF50',
+        fontWeight: 'bold',
+    },
 });
+

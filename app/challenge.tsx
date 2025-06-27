@@ -106,21 +106,24 @@ export default function ChallengePage() {
                 <Text style={styles.title}>{challenge.name}</Text>
                 <Text style={styles.description}>{challenge.description}</Text>
                 <View style={styles.detailsContainer}>
-                    <Text style={styles.detailsText}>Type: {challenge.type}</Text>
-                    <Text style={styles.detailsText}>Period: {challenge.period}</Text>
-                    <Text style={styles.detailsText}>Points: {challenge.points}</Text>
-                    <Text style={styles.detailsText}>Start Date: {challenge.start_date}</Text>
-                    <Text style={styles.detailsText}>End Date: {challenge.end_date}</Text>
-                    <Text style={styles.detailsText}>Joined: {challenge.user_challenge.joined ? "TAK" : "NIE"} </Text>
+                    <Text style={styles.detailsText}>Typ: {challenge.type}</Text>
+                    <Text style={styles.detailsText}>Powtarzanie: {challenge.period}</Text>
+                    <Text style={styles.detailsText}>Punkty: {challenge.points}</Text>
+                    <Text style={styles.detailsText}>Początek: {challenge.start_date}</Text>
+                    <Text style={styles.detailsText}>Koniec: {challenge.end_date}</Text>
                 </View>
+                
                 {challenge.user_challenge.joined ?
-                    <View style={[styles.joinButton, styles.joinedButton]}>
+                    <View
+                        style={[styles.joinButton, challenge.user_challenge.completed ? styles.completedButton : styles.joinedButton]}>
                         <FontAwesome name="check-circle" size={20} color="#fff" style={styles.joinedIcon}/>
-                        <Text style={styles.joinButtonText}>Joined the challenge</Text>
+                        <Text style={styles.joinButtonText}>
+                            {challenge.user_challenge.completed ? 'Wyzwanie wykonane' : 'Dołączono do wyzwania'}
+                        </Text>
                     </View>
                     :
                 <TouchableOpacity style={styles.joinButton} onPress={() => setModalVisible(true)}>
-                    <Text style={styles.joinButtonText}>Join the challenge</Text>
+                    <Text style={styles.joinButtonText}>Dołącz do wyzwania</Text>
                 </TouchableOpacity>
                 }
                 <Modal
@@ -172,6 +175,12 @@ const styles = StyleSheet.create({
     },
     joinedButton: {
         backgroundColor: '#34C759',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    completedButton: {
+        backgroundColor: '#5856D6',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',

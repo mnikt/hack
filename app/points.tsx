@@ -65,10 +65,10 @@ export default function PointsScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.totalPointsContainer}>
-                <Text style={styles.totalPointsLabel}>Total Points</Text>
+                <Text style={styles.totalPointsLabel}>Twoje Punkty</Text>
                 <Text style={styles.totalPointsValue}>{pointsData.total}</Text>
             </View>
-            <Text style={styles.historyTitle}>Points History</Text>
+            <Text style={styles.historyTitle}>Historia punktów</Text>
             <FlatList
                 data={pointsData.history}
                 keyExtractor={(item) => item.name}

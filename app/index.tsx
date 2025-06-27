@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
     View,
     Text,
@@ -9,13 +9,16 @@ import {
     ScrollView,
 } from 'react-native';
 
-import {useRouter} from 'expo-router';
+import {useFocusEffect, useRouter} from 'expo-router';
 import {User, getUser} from "@/logic/user";
+import QuizView, { Quiz } from "@/app/quiz";
 
 export default function HomeScreen() {
     const router = useRouter();
     const [user, setUser] = useState<User>();
     const [points, setPoints] = useState(0);
+    const [quizzes, setQuizzes] = useState<Array<Quiz>>([]);
+    const [currentStateTime, setCurrentStateTime] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -26,24 +29,50 @@ export default function HomeScreen() {
         fetchUser();
     }, []);
 
-    useEffect(() => {
-        if (!user) return;
+    const refresh = () => {
+        setCurrentStateTime(Date.now());
+    }
 
-        const fetchPoints = () => {
-            if (user?.id) {
-                fetch(`http://10.9.0.174:8000/gamification/points/api`, {
+    useEffect(() => {
+        const fetchQuiz = async () => {
+            if (!user?.id) return;
+            try {
+                const response = await fetch(`http://10.9.0.174:8000/gamification/quizzes/api`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authentication': user.id.toString()
                     }
-                })
-                .then(response => response.json())
-                .then(data => setPoints(data.total))
-                .catch(error => console.error('Error fetching points:', error));
+                });
+                const data = await response.json();
+                setQuizzes(data);
+            } catch (error) {
+                console.error('Error fetching quiz:', error);
             }
         };
-        fetchPoints();
-    }, [user]);
+        fetchQuiz();
+    }, [user, currentStateTime]);
+
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!user) return;
+            fetchPoints();
+        }, [user, currentStateTime])
+    );
+
+    const fetchPoints = () => {
+        if (user?.id) {
+            fetch(`http://10.9.0.174:8000/gamification/points/api`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authentication': user.id.toString()
+                }
+            })
+            .then(response => response.json())
+            .then(data => setPoints(data.total))
+            .catch(error => console.error('Error fetching points:', error));
+        }
+    };
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -73,7 +102,7 @@ export default function HomeScreen() {
                           onPress={() => router.push('/points')}
                         >
                             <Text style={styles.customButtonText}>
-                              Twoje punkty: <Text style={styles.customButtonText2}>{points}</Text>
+                              <Text style={styles.customButtonText2}>{points}</Text> punktów
                             </Text>
                         </TouchableOpacity>
                     </Text>
@@ -94,26 +123,11 @@ export default function HomeScreen() {
                     resizeMode="contain"
                 />
             </View>
-            <View style={styles.challengeBox}>
-                <Text style={styles.challengeTitle}>Daily Growie Quiz</Text>
-                <Text style={styles.quizQuestion}>
-                    Czy potrafisz dobrze segregować?{'\n'}
-                    Gdzie wyrzucisz karton po mleku z plastikową zakrętką i resztką płynu w środku?
-                </Text>
-                <TouchableOpacity style={styles.answerButton} onPress={() => {}}>
-                    <Text style={styles.answerText}>A. Do papieru</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.answerButton} onPress={() => {}}>
-                    <Text style={styles.answerText}>B. Do tworzyw sztucznych</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.answerButton} onPress={() => {}}>
-                    <Text style={styles.answerText}>C. Do odpadów zmieszanych</Text>
-                </TouchableOpacity>
-            </View>
 
-            {/* Kafelki (4 sztuki) */}
+            {quizzes && quizzes.map(q => <QuizView quiz={q} key={q.id} refresh={refresh}/>)}
+
             <View style={styles.tileRow}>
-                <TouchableOpacity style={styles.tile} onPress={() => router.push('/GrowieScreen')}>
+                <TouchableOpacity style={styles.tile} onPress={() => router.push('/ar')}>
                     <Image
                         source={require('../assets/images/BIGkote.png')}
                         style={styles.tileIcon}
@@ -122,24 +136,24 @@ export default function HomeScreen() {
                     <Text style={styles.tileLabel}>Twój Eko-Buddy</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.tile} onPress={() => router.push('/trash')}>
-                    <Image
-                        source={require('../assets/images/segregacja.png')}
-                        style={styles.tileIcon}
-                        resizeMode="contain"
-                    />
-                    <Text style={styles.tileLabel}>SmartBin Scan</Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={styles.tileRow}>
-                <TouchableOpacity style={styles.tile} onPress={() => router.push('/wydarzenia')}>
+                <TouchableOpacity style={styles.tile} onPress={() => router.push('/events')}>
                     <Image
                         source={require('../assets/images/kalendarz.png')}
                         style={styles.tileIcon}
                         resizeMode="contain"
                     />
                     <Text style={styles.tileLabel}>Wydarzenia</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.tileRow}>
+                <TouchableOpacity style={styles.tile} onPress={() => router.push('/challenges')}>
+                    <Image
+                        source={require('../assets/images/kalendarz.png')}
+                        style={styles.tileIcon}
+                        resizeMode="contain"
+                    />
+                    <Text style={styles.tileLabel}>Wyzwania</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.tile} onPress={() => router.push('/challenges')}>
@@ -148,7 +162,27 @@ export default function HomeScreen() {
                         style={styles.tileIcon}
                         resizeMode="contain"
                     />
-                    <Text style={styles.tileLabel}>Społeczność & Ranking</Text>
+                    <><Text style={styles.tileLabel}>Społeczność & Ranking</Text></>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.tileRow}>
+                <TouchableOpacity style={styles.tile} onPress={() => router.push('/trash')}>
+                    <Image
+                        source={require('../assets/images/segregacja.png')}
+                        style={styles.tileIcon}
+                        resizeMode="contain"
+                    />
+                    <Text style={styles.tileLabel}>SmartBin Scan</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.tile} onPress={() => router.push('/qrScanner')}>
+                    <Image
+                        source={require('../assets/images/ranking.png')}
+                        style={styles.tileIcon}
+                        resizeMode="contain"
+                    />
+                    <><Text style={styles.tileLabel}>Skaner QR</Text></>
                 </TouchableOpacity>
             </View>
 
