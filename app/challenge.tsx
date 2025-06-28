@@ -134,31 +134,31 @@ export default function ChallengePage() {
                 >
                     <View style={styles.modalContainer}>
                         <View style={styles.modalContent}>
-                            <Text style={styles.modalTitle}>Terms and Conditions</Text>
+                            <Text style={styles.modalTitle}>Warunki uczestnictwa</Text>
                             <ScrollView style={styles.modalScroll}>
                                 <Text style={styles.modalText}>
-                                    By joining this challenge, you agree to the following terms and conditions:
+                                    Dołączając do wyzwania, zgadzasz się na poniższe warunki:
                                     {'\n\n'}
-                                    1. Participation Rules
+                                    Cel: celem wyzwania jest dobra zabawa.
                                     {'\n'}
-                                    2. Point System
+                                    Czas trwania: Od XX.XX.XXXX do XX.XX.XXXX.
                                     {'\n'}
-                                    3. Challenge Duration
+                                    Udział: Wykonuj zadania zgodnie z instrukcją.
                                     {'\n'}
-                                    4. Completion Requirements
+                                    Odpowiedzialność: Działaj bezpiecznie. Udział jest dobrowolny.
                                 </Text>
                             </ScrollView>
                             <TouchableOpacity
                                 style={styles.acceptButton}
                                 onPress={() => joinChallenge(true)}
                             >
-                                <Text style={styles.acceptButtonText}>Accept & Join</Text>
+                                <Text style={styles.acceptButtonText}>Akceptuj i dołącz</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.cancelButton}
                                 onPress={() => joinChallenge(false)}
                             >
-                                <Text style={styles.cancelButtonText}>Cancel</Text>
+                                <Text style={styles.cancelButtonText}>Wróć</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

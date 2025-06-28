@@ -61,7 +61,8 @@ export default function TrashScreen() {
         setResult(data);
         setTimeout(() => {
             setImageUri("");
-        }, 5000);
+            setResult("");
+        }, 3000);
     }
   
     return (
