@@ -47,6 +47,14 @@
         {
           "MaterialIcons": "./node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
       ]
     ],
     "experiments": {
