@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, ActivityIndicator, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {useLocalSearchParams} from 'expo-router';
-import {getUser} from "@/logic/user";
+import useFetch from "@/logic/useFetch";
 
 interface Event {
     id: string;
@@ -16,50 +16,19 @@ interface Event {
 
 export default function EventPage() {
     const {id} = useLocalSearchParams();
-    const [event, setEvent] = useState<Event | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [event, loading, error, fetch] = useFetch<Event>({ initLoading: true });
 
     useEffect(() => {
-        fetchEvent();
+        fetch(`/gamification/events/api/${id}`);
     }, [id]);
 
-    const fetchEvent = async () => {
-        const user = await getUser();
-        if (!user?.id) {
-            setError('User not authenticated');
-            setLoading(false);
-            return;
-        }
-        await fetch(`http://20.86.144.2:8000/gamification/events/api/${id}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authentication': user.id.toString()
-                }
-            }
-        ).then(response => response.json()).then(data => {
-            setEvent(data);
-        }).catch(error => setError(error.message)).finally(() => setLoading(false));
-    };
-
     const handleJoinEvent = async () => {
-        const user = await getUser();
-        if (!user?.id || !event) return;
-
-        try {
-            const response = await fetch(`http://20.86.144.2:8000/gamification/events/api/${event.id}/join`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authentication': user.id.toString()
-                }
-            });
-            if (response.ok) {
-                setEvent({...event, user_joined: true, joined_number: event.joined_number + 1});
-            }
-        } catch (error) {
-            console.error(error);
-        }
+        fetch(`/gamification/events/api/${id}/join`, {
+            method: 'POST',
+            manipulateFetchData: ((_, state?: Event) => {
+                if (state) return {...state, user_joined: true, joined_number: state.joined_number + 1};
+            })
+        });
     };
 
     if (loading) {

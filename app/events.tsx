@@ -1,7 +1,7 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback} from 'react';
 import {View, Text, FlatList, ActivityIndicator, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {useFocusEffect, useRouter} from 'expo-router';
-import {getUser} from "@/logic/user";
+import useFetch from "@/logic/useFetch";
 
 
 interface Event {
@@ -16,35 +16,14 @@ interface Event {
 }
 
 export default function EventsScreen() {
-    const [events, setEvents] = useState<Event[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [events, loading, error, fetch] = useFetch<Event[]>({ initLoading: true });
     const router = useRouter();
 
     useFocusEffect(
         useCallback(() => {
-            fetchEvents();
+            fetch('/gamification/events/api');
         }, [])
     );
-
-
-    const fetchEvents = async () => {
-        const user = await getUser();
-        if (!user?.id) {
-            setError('User not authenticated');
-            setLoading(false);
-            return;
-        }
-        await fetch(`http://20.86.144.2:8000/gamification/events/api`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authentication': user.id.toString()
-                }
-            }
-        ).then(response => response.json()).then(data => {
-            setEvents(data);
-        }).catch(error => setError(error.message)).finally(() => setLoading(false));
-    };
 
     if (loading) {
         return (
