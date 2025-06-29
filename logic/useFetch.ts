@@ -8,24 +8,26 @@ type hookArgs = {
     initLoading?: boolean,
 }
 
-type fetchArgs = {
+type fetchArgs<T> = {
     method?: "GET" | "POST",
     body?: any,
     contentType?: string,
-    includeCredentials?: boolean
+    includeCredentials?: boolean,
+    manipulateFetchData?: (fetchedData: any, state?: T) => T | undefined,
 }
 
-export default function useFetch<T>(args: hookArgs = {}): [T | undefined, boolean, string | null, (endpoint: string, args?: fetchArgs) => void] {
+export default function useFetch<T>(args: hookArgs = {}): [T | undefined, boolean, string | null, (endpoint: string, args?: fetchArgs<T>) => void] {
     const [data, setData] = useState<T>();
     const [loading, setLoading] = useState(args.initLoading || false);
     const [error, setError] = useState<string | null>(null);
 
-    const _fetch = async (endpoint: string, args: fetchArgs = {}) => {
+    const _fetch = async (endpoint: string, args: fetchArgs<T> = {}) => {
         const url = backendURL + '/' + endpoint;
         const method = args.method || "GET";
         const body = args.body ? JSON.stringify(args.body) : null;
         const contentType = args.contentType || "application/json";
         const includeCredentials = args.includeCredentials || true;
+        const manipulateFetchData = args.manipulateFetchData || ((fetchedData: any, state?: T) => fetchedData);
 
         let user_id = "";
         if (includeCredentials){
@@ -50,7 +52,7 @@ export default function useFetch<T>(args: hookArgs = {}): [T | undefined, boolea
             if (response.ok) {
                 return response.json();
             }
-        }).then(data => setData(data)).catch(error => setError(error.message)).finally(() => setLoading(false));
+        }).then(fetchData => setData(manipulateFetchData(fetchData, data))).catch(error => setError(error.message)).finally(() => setLoading(false));
     }
 
     return [

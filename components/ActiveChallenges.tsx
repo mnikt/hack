@@ -26,7 +26,8 @@ export default function ActiveChallenges() {
 
     useFocusEffect(
         useCallback(() => {
-            fetch('gamification/challenges/api');
+            fetch('gamification/challenges/api',
+                { manipulateFetchData: (data: Challenge[]) => data.filter(challenge => challenge.user_challenge.joined)});
         }, [])
     );
 

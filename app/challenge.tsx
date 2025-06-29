@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, Image, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity, Modal} from 'react-native';
 import {useLocalSearchParams} from 'expo-router';
 import {FontAwesome} from '@expo/vector-icons';
-import {getUser} from "@/logic/user";
+import useFetch from "@/logic/useFetch";
 
 interface Challenge {
     id: string;
@@ -22,52 +22,22 @@ interface Challenge {
 }
 
 export default function ChallengePage() {
-    const [challenge, setChallenge] = useState<Challenge | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [challenge, loading, error, fetch] = useFetch<Challenge>({ initLoading: true });
     const [modalVisible, setModalVisible] = useState(false);
     const {id} = useLocalSearchParams();
 
     useEffect(() => {
-        fetchChallenge();
+        fetch(`/gamification/challenges/api/${id}`);
     }, [id]);
 
-    const fetchChallenge = async () => {
-        const user = await getUser();
-        if (!user?.id) {
-            setError('User not authenticated');
-            setLoading(false);
-            return;
-        }
-
-        await fetch(`http://20.86.144.2:8000/gamification/challenges/api/${id}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authentication': user.id.toString()
-            }}
-        ).then(response => response.json()).then(data => {
-            setChallenge(data);
-        }).catch(error => setError(error.message)).finally(() => setLoading(false));
-    };
-
     const joinChallenge = async (join: boolean) => {
-        const user = await getUser();
-        if (!user?.id) {
-            setError('User not authenticated');
-            setLoading(false);
-            return;
+        const manipulateFetchData = (_: any, challenge?: Challenge) => {
+            if (challenge) return {...challenge, user_challenge: { joined: true, completed: false, date: '' }}
         }
 
-        if (join && challenge) {
-            fetch(`http://20.86.144.2:8000/gamification/challenges/api/${challenge.id}/join`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authentication': user.id.toString()
-                }
-            }).then(response => {
-                if (response.ok) setChallenge({...challenge, user_challenge: { joined: true, completed: false, date: '' }});
-            }).catch(error => setError(error.message)).finally(() => setLoading(false));
+        if (join) {
+            fetch(`gamification/challenges/api/${challenge?.id}/join`,
+                { method: "POST", manipulateFetchData: manipulateFetchData });
         }
         setModalVisible(false);
     };
