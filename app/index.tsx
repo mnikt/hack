@@ -184,17 +184,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
             </View>
 
-            {/* Wyzwanie budynkowe */}
-                <ActiveChallenges />
-                {/*<Text style={styles.buildingChallengeText}>*/}
-                {/*    Udział w wyzwaniu budynkowym!{'\n'}*/}
-                {/*    Przez 10 dni roboczych przyjeżdżaj do pracy rowerem*/}
-                {/*</Text>*/}
-                {/*<View style={styles.progressBar}>*/}
-                {/*    /!* Prosty pasek postępu – 3/10 dni *!/*/}
-                {/*    <View style={[styles.progress, { width: '30%' }]} />*/}
-                {/*</View>*/}
-                {/*<Text style={styles.progressCount}>3/10 dni</Text>*/}
+            <ActiveChallenges />
         </ScrollView>
     );
 }

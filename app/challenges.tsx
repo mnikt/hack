@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, FlatList, ActivityIndicator, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {useRouter} from 'expo-router';
-import {getUser} from "@/logic/user";
+import useFetch from "@/logic/useFetch";
 
 interface Challenge {
     id: string;
@@ -13,34 +13,19 @@ interface Challenge {
     type: string;
     period: string;
     points: number;
+    user_challenge: {
+        completed: boolean;
+        joined: boolean;
+    }
 }
 
 export default function ChallengesPage() {
-    const [challenges, setChallenges] = useState<Challenge[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [challenges, loading, error, fetch] = useFetch<Challenge[]>({ initLoading: true });
     const router = useRouter();
 
     useEffect(() => {
-        fetchChallenges();
+        fetch("gamification/challenges/api");
     }, []);
-
-    const fetchChallenges = async () => {
-        const user = await getUser();
-        if (!user?.id) {
-            setError('User not authenticated');
-            setLoading(false);
-            return;
-        }
-        await fetch(`http://20.86.144.2:8000/gamification/challenges/api`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authentication': user.id.toString()
-            }}
-        ).then(response => response.json()).then(data => {
-            setChallenges(data);
-        }).catch(error => setError(error.message)).finally(() => setLoading(false));
-    };
 
     if (loading) {
         return (
@@ -72,6 +57,14 @@ export default function ChallengesPage() {
                                 style={styles.challengeImage}
                             />
                             <Text style={styles.challengeTitle}>{item.name}</Text>
+                            <View style={styles.statusContainer}>
+                                {item.user_challenge.joined && (
+                                    <Text style={styles.statusText}>Dołączono</Text>
+                                )}
+                                {item.user_challenge.completed && (
+                                    <Text style={[styles.statusText, styles.completedText]}>Ukończono</Text>
+                                )}
+                            </View>
                         </View>
                     </TouchableOpacity>
                 )}
@@ -122,5 +115,18 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 8,
         marginBottom: 8,
+    },
+    statusContainer: {
+        flexDirection: 'row',
+        marginTop: 8,
+        gap: 8,
+    },
+    statusText: {
+        fontSize: 12,
+        color: '#4CAF50',
+        fontWeight: 'bold',
+    },
+    completedText: {
+        color: '#2196F3',
     },
 });
