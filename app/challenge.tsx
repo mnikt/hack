@@ -141,7 +141,7 @@ export default function ChallengePage() {
                                     {'\n\n'}
                                     Cel: celem wyzwania jest dobra zabawa.
                                     {'\n'}
-                                    Czas trwania: Od XX.XX.XXXX do XX.XX.XXXX.
+                                    Czas trwania: Od {challenge.start_date} do {challenge.end_date}.
                                     {'\n'}
                                     Udział: Wykonuj zadania zgodnie z instrukcją.
                                     {'\n'}

@@ -16,7 +16,13 @@
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to use your camera",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use your microphone"
       },
-      "bundleIdentifier": "com.anonymous.hack"
+      "bundleIdentifier": "com.hack.growie",
+      "buildNumber": "1.0.0",
+      "icon": {
+        "dark": "./assets/images/kotek_icon.png",
+        "light": "./assets/images/kotek_icon.png",
+        "tinted": "./assets/images/kotek_icon.png"
+      }
     },
     "android": {
       "adaptiveIcon": {
