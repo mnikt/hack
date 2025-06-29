@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, FlatList, ActivityIndicator, StyleSheet} from 'react-native';
-import {getUser} from "@/logic/user";
+import useFetch from "@/logic/useFetch";
 
 interface PointHistory {
     points: number;
@@ -14,37 +14,11 @@ interface PointsSummary {
 }
 
 export default function PointsScreen() {
-    const [pointsData, setPointsData] = useState<PointsSummary>({total: 0, history: []});
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [points, loading, error, fetch] = useFetch<PointsSummary>({ initLoading: true });
 
     useEffect(() => {
-        fetchPoints();
+        fetch('gamification/points/api');
     }, []);
-
-    const fetchPoints = async () => {
-        const user = await getUser();
-        if (!user?.id) {
-            setError('User not authenticated');
-            setLoading(false);
-            return;
-        }
-
-        try {
-            const response = await fetch(`http://20.86.144.2:8000/gamification/points/api`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authentication': user.id.toString()
-                }
-            });
-            const data = await response.json();
-            setPointsData(data);
-        } catch (error) {
-            setError('Failed to fetch points');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     if (loading) {
         return (
@@ -66,11 +40,11 @@ export default function PointsScreen() {
         <View style={styles.container}>
             <View style={styles.totalPointsContainer}>
                 <Text style={styles.totalPointsLabel}>Twoje Punkty</Text>
-                <Text style={styles.totalPointsValue}>{pointsData.total}</Text>
+                <Text style={styles.totalPointsValue}>{points?.total}</Text>
             </View>
             <Text style={styles.historyTitle}>Historia punktów</Text>
             <FlatList
-                data={pointsData.history}
+                data={points?.history}
                 keyExtractor={(item) => item.name}
                 renderItem={({item}) => (
                     <View style={styles.historyItem}>

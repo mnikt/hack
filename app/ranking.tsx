@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, FlatList, ActivityIndicator, StyleSheet} from 'react-native';
 import {getUser} from "@/logic/user";
+import useFetch from "@/logic/useFetch";
 
 interface RankingUser {
     id: number;
@@ -9,42 +10,13 @@ interface RankingUser {
 }
 
 export default function RankingView() {
-    const [users, setUsers] = useState<RankingUser[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [users, loading, error, fetch] = useFetch<RankingUser[]>({ initLoading: true});
     const [currentUserId, setCurrentUserId] = useState<number>(0);
 
     useEffect(() => {
-        fetchRanking();
+        fetch('gamification/ranking/api');
+        getUser().then(user => setCurrentUserId(user?.id || 0));
     }, []);
-
-    const fetchRanking = () => {
-        getUser().then(user => {
-            if (!user?.id) {
-                setError('User not authenticated');
-                setLoading(false);
-                return;
-            }
-            setCurrentUserId(user.id);
-
-            fetch('http://20.86.144.2:8000/gamification/ranking/api', {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authentication': user.id.toString()
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    setUsers(data);
-                })
-                .catch(error => {
-                    setError('Failed to fetch ranking');
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
-        });
-    };
 
     if (loading) {
         return (
