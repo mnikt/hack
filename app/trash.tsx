@@ -58,7 +58,12 @@ export default function TrashScreen() {
     };
 
     const showResult = (data: string) => {
-        setResult(data);
+        data = data.replaceAll(".", "").trim();
+        if (data.split(" ").length === 1) {
+            setResult(data);
+        } else {
+            setResult("Brak rekomendacji");
+        }
         setTimeout(() => {
             setImageUri("");
             setResult("");
