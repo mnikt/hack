@@ -20,14 +20,16 @@ export default function HomeScreen() {
     const [points, setPoints] = useState(0);
     const [quizzes, setQuizzes] = useState<Array<Quiz>>([]);
     const [currentStateTime, setCurrentStateTime] = useState<number | null>(null);
+    const [growieText, setGrowieText] = useState<string | undefined>(undefined);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const user = await getUser();
+        getUser().then(user => {
             if (user === null) router.push("/register");
-            else setUser(user);
-        };
-        fetchUser();
+            else {
+                setUser(user);
+                setGrowieText(`Cześć ${user.name}! Jestem Growie, Twój biurowy eko-buddy 😀`)
+            }
+        });
     }, []);
 
     const refresh = () => {
@@ -79,9 +81,7 @@ export default function HomeScreen() {
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             {/* Górny pasek: Menu, Logo, Punkty */}
             <View style={styles.topBar}>
-                {/* Lewa kolumna - hamburger */}
                 <View style={styles.leftColumn}>
-                    <Text>Trzeba poprawić ten górny element :)</Text>
                 </View>
 
                 {/* Środkowa kolumna - wycentrowane logo */}
@@ -108,21 +108,8 @@ export default function HomeScreen() {
                 </View>
             </View>
 
-            <GrowieCanvas />
-
-            {/* Sekcja powitalna */}
-            <View style={styles.headerSection}>
-                <View style={{flex: 1}}>
-                    <Text style={styles.mainTitle}>Cześć {user?.name}!</Text>
-                    <Text style={styles.subtitle}>Nie ma Cię w biurze</Text>
-                    <Text style={styles.smallInfo}>Twój Growie ma drzemkę...</Text>
-                </View>
-                {/* Ikona kotka */}
-                <Image
-                    source={require('../assets/images/KOT.png')}
-                    style={styles.catImage}
-                    resizeMode="contain"
-                />
+            <View style={styles.canvasView}>
+                <GrowieCanvas text={growieText}/>
             </View>
 
             {quizzes && quizzes.map(q => <QuizView quiz={q} key={q.id} refresh={refresh}/>)}
@@ -289,7 +276,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         borderRadius: 22,
         marginVertical:3,
-        alignSelf: 'flex-start',  // Kluczowe ustawienie
+        alignSelf: 'flex-start',
     },
     answerText: {
         color: '#000',
@@ -355,14 +342,14 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     customButton: {
-        backgroundColor: '#fff',    // białe tło
+        backgroundColor: '#fff',
         paddingVertical: 5,
         paddingHorizontal: 10,
         borderRadius: 6,
         alignItems: 'stretch',
       },
       customButtonText: {
-        color: '#000',              // czarny tekst
+        color: '#000',
         fontSize: 16,
       },
       customButtonText2: {
@@ -370,4 +357,8 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: "bold"
       },
+    canvasView: {
+        borderRadius: 5,
+        marginBottom: 20
+    },
 });

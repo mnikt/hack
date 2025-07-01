@@ -1,12 +1,34 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
-import {Canvas, useImage, Image} from "@shopify/react-native-skia";
+import {Canvas, useImage, Image, useFont, Paragraph, Skia, TextAlign} from "@shopify/react-native-skia";
 
 const canvasWidth = Dimensions.get('window').width - 32;
 const canvasHeight = canvasWidth / 2;
 
-const GrowieCanvas = () => {
+const GrowieCanvas = (props: {text?: string}) => {
     const bgImage = useImage(require("../assets/images/tlo.png"));
+    const growieImage = useImage(require("../assets/images/growie_standing.png"));
+    const bubbleImage = useImage(require("../assets/images/bubble.png"));
+    const font = useFont(require("../assets/fonts/SpaceMono-Regular.ttf"), 15);
+
+    const paragraph = useMemo(() => {
+        if (!font || !props.text) {
+            return null;
+        }
+        const paragraphStyle = {
+            textAlign: TextAlign.Center
+        };
+        const textStyle = {
+            color: Skia.Color("black"),
+            font: font,
+            fontSize: 20,
+        };
+        return Skia.ParagraphBuilder.Make(paragraphStyle)
+            .pushStyle(textStyle)
+            .addText(props.text)
+            .pop()
+            .build();
+    }, [font]);
 
     return (
         <View style={styles.container}>
@@ -19,6 +41,32 @@ const GrowieCanvas = () => {
                     width={canvasWidth}
                     height={canvasHeight}
                 />
+                <Image
+                    image={growieImage}
+                    fit="contain"
+                    x={canvasWidth * 0.6}
+                    y={canvasHeight * 0.15}
+                    width={canvasWidth * 0.4}
+                    height={canvasWidth * 0.4}
+                />
+                {font && props.text && (
+                    <>
+                        <Image
+                            image={bubbleImage}
+                            fit="fill"
+                            x={canvasWidth * 0.05}
+                            y={canvasHeight * 0.1}
+                            width={canvasWidth * 0.6}
+                            height={canvasHeight * 0.8}
+                        />
+                        <Paragraph
+                            paragraph={paragraph}
+                            x={canvasWidth * 0.07}
+                            y={canvasHeight * 0.5 - (paragraph?.getHeight() || 0) / 2}
+                            width={canvasWidth * 0.5}
+                        />
+                    </>
+                )}
             </Canvas>
         </View>
     );
