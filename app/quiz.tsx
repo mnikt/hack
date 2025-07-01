@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {getUser} from "@/logic/user";
+import GrowieCommunicatesManager from "@/logic/GrowieCommunicatesManager";
 
 export interface Quiz {
     id: string;
@@ -30,6 +31,7 @@ export default function QuizView(props: {quiz: Quiz, refresh: () => void}) {
             })
         }).then(response => response.json()).then(data => {
             props.refresh();
+            GrowieCommunicatesManager.getInstance().addImmediate(data.correct ? "Brawo! Dobra odpowiedź" : "Aj, powodzenia następnym razem")
         }).catch(error => console.error('Error fetching quiz:', error));
     }
 

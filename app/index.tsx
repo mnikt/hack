@@ -14,12 +14,13 @@ import QuizView, { Quiz } from "@/app/quiz";
 import ActiveChallenges from "@/components/ActiveChallenges";
 import GrowieCanvas from "@/components/GrowieCanvas";
 import GrowieCommunicatesManager from "@/logic/GrowieCommunicatesManager";
+import useFetch from "@/logic/useFetch";
 
 export default function HomeScreen() {
     const router = useRouter();
     const [user, setUser] = useState<User>();
-    const [points, setPoints] = useState(0);
-    const [quizzes, setQuizzes] = useState<Array<Quiz>>([]);
+    const [points, pLoading, pError, fetchPoints] = useFetch<any>();
+    const [quizzes, qLoading, qError, fetchQuizzes] = useFetch<Array<Quiz>>();
     const [currentStateTime, setCurrentStateTime] = useState<number | null>(null);
 
     useEffect(() => {
@@ -27,9 +28,10 @@ export default function HomeScreen() {
             if (user === null) router.push("/register");
             else {
                 setUser(user);
-                GrowieCommunicatesManager.getInstance().add(`Cześć ${user.name}! Jestem Growie, Twój biurowy eko-buddy 😀`);
-                GrowieCommunicatesManager.getInstance().add('Zapraszam do udziału w wydarzeniach!');
-                GrowieCommunicatesManager.getInstance().add('Ale upał! Pamiętaj o nawadnianiu 😀');
+                const manager = GrowieCommunicatesManager.getInstance();
+                manager.add(`Cześć ${user.name}! Jestem Growie, Twój biurowy eko-buddy 😀`);
+                manager.add('Zapraszam do udziału w wydarzeniach!');
+                manager.add('Ale upał! Pamiętaj o nawadnianiu 😀');
             }
         });
     }, []);
@@ -39,45 +41,15 @@ export default function HomeScreen() {
     }
 
     useEffect(() => {
-        const fetchQuiz = async () => {
-            if (!user?.id) return;
-            try {
-                const response = await fetch(`http://20.86.144.2:8000/gamification/quizzes/api`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authentication': user.id.toString()
-                    }
-                });
-                const data = await response.json();
-                setQuizzes(data);
-            } catch (error) {
-                console.error('Error fetching quiz:', error);
-            }
-        };
-        fetchQuiz();
+        fetchQuizzes('gamification/quizzes/api');
     }, [user, currentStateTime]);
-
 
     useFocusEffect(
         useCallback(() => {
             if (!user) return;
-            fetchPoints();
+            fetchPoints('gamification/points/api');
         }, [user, currentStateTime])
     );
-
-    const fetchPoints = () => {
-        if (user?.id) {
-            fetch(`http://20.86.144.2:8000/gamification/points/api`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authentication': user.id.toString()
-                }
-            })
-            .then(response => response.json())
-            .then(data => setPoints(data.total))
-            .catch(error => console.error('Error fetching points:', error));
-        }
-    };
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -98,7 +70,7 @@ export default function HomeScreen() {
                       onPress={() => router.push('/points')}
                     >
                         <Text style={styles.customButtonText}>
-                          <Text style={styles.customButtonText2}>{points}</Text> {"\n"}punktów
+                          <Text style={styles.customButtonText2}>{points?.total || 0}</Text> {"\n"}punktów
                         </Text>
                     </TouchableOpacity>
                 </View>
