@@ -12,6 +12,7 @@ import {useFocusEffect, useRouter} from 'expo-router';
 import {User, getUser} from "@/logic/user";
 import QuizView, { Quiz } from "@/app/quiz";
 import ActiveChallenges from "@/components/ActiveChallenges";
+import GrowieCanvas from "@/components/GrowieCanvas";
 
 export default function HomeScreen() {
     const router = useRouter();
@@ -106,6 +107,8 @@ export default function HomeScreen() {
                     </Text>
                 </View>
             </View>
+
+            <GrowieCanvas />
 
             {/* Sekcja powitalna */}
             <View style={styles.headerSection}>
