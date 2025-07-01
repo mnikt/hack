@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
-import {Canvas, useImage, Image, useFont, Paragraph, Skia, TextAlign} from "@shopify/react-native-skia";
+import {Canvas, useImage, Image, Paragraph, Skia, TextAlign, useFonts} from "@shopify/react-native-skia";
 
 const canvasWidth = Dimensions.get('window').width - 32;
 const canvasHeight = canvasWidth / 2;
@@ -9,10 +9,15 @@ const GrowieCanvas = (props: {text?: string}) => {
     const bgImage = useImage(require("../assets/images/tlo.png"));
     const growieImage = useImage(require("../assets/images/growie_standing.png"));
     const bubbleImage = useImage(require("../assets/images/bubble.png"));
-    const font = useFont(require("../assets/fonts/SpaceMono-Regular.ttf"), 15);
+
+    const fontMgr = useFonts({
+        VarelaRound: [
+            require("../assets/fonts/VarelaRound-Regular.ttf"),
+        ],
+    });
 
     const paragraph = useMemo(() => {
-        if (!font || !props.text) {
+        if (!fontMgr || !props.text) {
             return null;
         }
         const paragraphStyle = {
@@ -20,15 +25,15 @@ const GrowieCanvas = (props: {text?: string}) => {
         };
         const textStyle = {
             color: Skia.Color("black"),
-            font: font,
-            fontSize: 20,
+            fontFamilies: ["VarelaRound"],
+            fontSize: 21,
         };
-        return Skia.ParagraphBuilder.Make(paragraphStyle)
+        return Skia.ParagraphBuilder.Make(paragraphStyle, fontMgr)
             .pushStyle(textStyle)
             .addText(props.text)
             .pop()
             .build();
-    }, [font]);
+    }, [fontMgr]);
 
     return (
         <View style={styles.container}>
@@ -49,7 +54,7 @@ const GrowieCanvas = (props: {text?: string}) => {
                     width={canvasWidth * 0.4}
                     height={canvasWidth * 0.4}
                 />
-                {font && props.text && (
+                {fontMgr && props.text && (
                     <>
                         <Image
                             image={bubbleImage}
