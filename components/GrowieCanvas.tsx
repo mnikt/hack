@@ -1,14 +1,21 @@
-import React, {useMemo} from 'react';
+import React, {useEffect} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 import {Canvas, useImage, Image, Paragraph, Skia, TextAlign, useFonts} from "@shopify/react-native-skia";
+import GrowieCommunicatesManager from "@/logic/GrowieCommunicatesManager";
 
 const canvasWidth = Dimensions.get('window').width - 32;
 const canvasHeight = canvasWidth / 2;
 
-const GrowieCanvas = (props: {text?: string}) => {
+const GrowieCanvas = () => {
     const bgImage = useImage(require("../assets/images/tlo.png"));
     const growieImage = useImage(require("../assets/images/growie_standing.png"));
     const bubbleImage = useImage(require("../assets/images/bubble.png"));
+    const buildingImage = useImage(require("../assets/images/building.png"));
+    const [text, setText] = React.useState<string | undefined>();
+
+    useEffect(() => {
+        GrowieCommunicatesManager.getInstance().subscribe(setText);
+    }, []);
 
     const fontMgr = useFonts({
         VarelaRound: [
@@ -16,24 +23,20 @@ const GrowieCanvas = (props: {text?: string}) => {
         ],
     });
 
-    const paragraph = useMemo(() => {
-        if (!fontMgr || !props.text) {
-            return null;
-        }
-        const paragraphStyle = {
+    const paragraph = (!fontMgr || !text) ? null :
+        Skia.ParagraphBuilder.Make({
             textAlign: TextAlign.Center
-        };
-        const textStyle = {
-            color: Skia.Color("black"),
-            fontFamilies: ["VarelaRound"],
-            fontSize: 21,
-        };
-        return Skia.ParagraphBuilder.Make(paragraphStyle, fontMgr)
-            .pushStyle(textStyle)
-            .addText(props.text)
+        }, fontMgr)
+            .pushStyle({
+                color: Skia.Color("black"),
+                fontFamilies: ["VarelaRound"],
+                fontSize: 21,
+            })
+            .addText(text)
             .pop()
             .build();
-    }, [fontMgr]);
+
+    paragraph?.layout(canvasWidth * 0.5);
 
     return (
         <View style={styles.container}>
@@ -54,7 +57,15 @@ const GrowieCanvas = (props: {text?: string}) => {
                     width={canvasWidth * 0.4}
                     height={canvasWidth * 0.4}
                 />
-                {fontMgr && props.text && (
+                <Image
+                    image={buildingImage}
+                    fit="contain"
+                    x={0}
+                    y={0}
+                    width={canvasHeight}
+                    height={canvasHeight}
+                />
+                {fontMgr && text && (
                     <>
                         <Image
                             image={bubbleImage}
@@ -67,7 +78,7 @@ const GrowieCanvas = (props: {text?: string}) => {
                         <Paragraph
                             paragraph={paragraph}
                             x={canvasWidth * 0.07}
-                            y={canvasHeight * 0.5 - (paragraph?.getHeight() || 0) / 2}
+                            y={canvasHeight * 0.5 - (paragraph?.getHeight() || canvasHeight * 0.65) / 2}
                             width={canvasWidth * 0.5}
                         />
                     </>

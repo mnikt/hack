@@ -13,6 +13,7 @@ import {User, getUser} from "@/logic/user";
 import QuizView, { Quiz } from "@/app/quiz";
 import ActiveChallenges from "@/components/ActiveChallenges";
 import GrowieCanvas from "@/components/GrowieCanvas";
+import GrowieCommunicatesManager from "@/logic/GrowieCommunicatesManager";
 
 export default function HomeScreen() {
     const router = useRouter();
@@ -20,14 +21,15 @@ export default function HomeScreen() {
     const [points, setPoints] = useState(0);
     const [quizzes, setQuizzes] = useState<Array<Quiz>>([]);
     const [currentStateTime, setCurrentStateTime] = useState<number | null>(null);
-    const [growieText, setGrowieText] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         getUser().then(user => {
             if (user === null) router.push("/register");
             else {
                 setUser(user);
-                setGrowieText(`Cześć ${user.name}! Jestem Growie, Twój biurowy eko-buddy 😀`)
+                GrowieCommunicatesManager.getInstance().add(`Cześć ${user.name}! Jestem Growie, Twój biurowy eko-buddy 😀`);
+                GrowieCommunicatesManager.getInstance().add('Zapraszam do udziału w wydarzeniach!');
+                GrowieCommunicatesManager.getInstance().add('Ale upał! Pamiętaj o nawadnianiu 😀');
             }
         });
     }, []);
@@ -103,7 +105,7 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.canvasView}>
-                <GrowieCanvas text={growieText}/>
+                <GrowieCanvas />
             </View>
 
             {quizzes && quizzes.map(q => <QuizView quiz={q} key={q.id} refresh={refresh}/>)}
