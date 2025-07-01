@@ -79,12 +79,9 @@ export default function HomeScreen() {
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-            {/* Górny pasek: Menu, Logo, Punkty */}
             <View style={styles.topBar}>
-                <View style={styles.leftColumn}>
-                </View>
+                <View style={styles.leftColumn}></View>
 
-                {/* Środkowa kolumna - wycentrowane logo */}
                 <View style={styles.centerColumn}>
                     <Image
                         source={require('../assets/images/growie_logo.png')}
@@ -93,18 +90,15 @@ export default function HomeScreen() {
                     />
                 </View>
 
-                {/* Prawa kolumna - punkty */}
                 <View style={styles.rightColumn}>
-                    <Text style={styles.points}>
-                        <TouchableOpacity
-                          style={styles.customButton}
-                          onPress={() => router.push('/points')}
-                        >
+                    <TouchableOpacity
+                      style={styles.customButton}
+                      onPress={() => router.push('/points')}
+                    >
                         <Text style={styles.customButtonText}>
-                              <Text style={styles.customButtonText2}>{points}</Text> punktów
-                            </Text>
-                        </TouchableOpacity>
-                    </Text>
+                          <Text style={styles.customButtonText2}>{points}</Text> {"\n"}punktów
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -198,7 +192,6 @@ const styles = StyleSheet.create({
     leftColumn: {
         flex: 1,
         justifyContent: 'center',
-        paddingLeft: 16,
     },
     centerColumn: {
         flex: 1,
@@ -209,7 +202,6 @@ const styles = StyleSheet.create({
      flex: 1,
        alignItems: 'flex-end',
        justifyContent: 'center',
-       paddingRight: 30,
    },
     hamburger: {
         fontSize: 24,
@@ -344,13 +336,14 @@ const styles = StyleSheet.create({
     customButton: {
         backgroundColor: '#fff',
         paddingVertical: 5,
-        paddingHorizontal: 10,
+        paddingHorizontal: 5,
         borderRadius: 6,
         alignItems: 'stretch',
+        marginTop: -15
       },
       customButtonText: {
         color: '#000',
-        fontSize: 16,
+        fontSize: 10,
       },
       customButtonText2: {
         color: GREEN,
