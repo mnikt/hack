@@ -29,9 +29,9 @@ export default function HomeScreen() {
             else {
                 setUser(user);
                 const manager = GrowieCommunicatesManager.getInstance();
-                manager.add(`Cześć ${user.name}! Jestem Growie, Twój biurowy eko-buddy 😀`);
+                manager.add(`Cześć ${user.name}! Jestem Growie, Twój biurowy eko-buddy!`);
                 manager.add('Zapraszam do udziału w wydarzeniach!');
-                manager.add('Ale upał! Pamiętaj o nawadnianiu 😀');
+                manager.add('Ale upał! Pamiętaj o nawadnianiu!');
             }
         });
     }, []);
@@ -83,13 +83,13 @@ export default function HomeScreen() {
             {quizzes && quizzes.map(q => <QuizView quiz={q} key={q.id} refresh={refresh}/>)}
 
             <View style={styles.tileRow}>
-                <TouchableOpacity style={styles.tile} onPress={() => router.push('/ar')}>
+                <TouchableOpacity style={styles.tile} onPress={() => router.push('/challenges')}>
                     <Image
-                        source={require('../assets/images/kotek.png')}
+                        source={require('../assets/images/wyzwanie.png')}
                         style={styles.tileIcon}
                         resizeMode="contain"
                     />
-                    <Text style={styles.tileLabel}>Twój Eko-Buddy</Text>
+                    <Text style={styles.tileLabel}>Wyzwania</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.tile} onPress={() => router.push('/events')}>
@@ -103,15 +103,6 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.tileRow}>
-                <TouchableOpacity style={styles.tile} onPress={() => router.push('/challenges')}>
-                    <Image
-                        source={require('../assets/images/wyzwanie.png')}
-                        style={styles.tileIcon}
-                        resizeMode="contain"
-                    />
-                    <Text style={styles.tileLabel}>Wyzwania</Text>
-                </TouchableOpacity>
-
                 <TouchableOpacity style={styles.tile} onPress={() => router.push('/ranking')}>
                     <Image
                         source={require('../assets/images/ranking.png')}
@@ -120,9 +111,6 @@ export default function HomeScreen() {
                     />
                     <><Text style={styles.tileLabel}>Ranking</Text></>
                 </TouchableOpacity>
-            </View>
-
-            <View style={styles.tileRow}>
                 <TouchableOpacity style={styles.tile} onPress={() => router.push('/trash')}>
                     <Image
                         source={require('../assets/images/segregacja.png')}
@@ -131,6 +119,18 @@ export default function HomeScreen() {
                     />
                     <Text style={styles.tileLabel}>SmartBin Scan</Text>
                 </TouchableOpacity>
+            </View>
+
+            <View style={styles.tileRow}>
+                <TouchableOpacity style={styles.tile} onPress={() => router.push('/ar')}>
+                    <Image
+                        source={require('../assets/images/kotek.png')}
+                        style={styles.tileIcon}
+                        resizeMode="contain"
+                    />
+                    <Text style={styles.tileLabel}>Twój Eko-Buddy</Text>
+                </TouchableOpacity>
+
 
                 <TouchableOpacity style={styles.tile} onPress={() => router.push('/qrScanner')}>
                     <Image

@@ -77,9 +77,9 @@ const GrowieCanvas = () => {
                         />
                         <Paragraph
                             paragraph={paragraph}
-                            x={canvasWidth * 0.07}
+                            x={canvasWidth * 0.069}
                             y={canvasHeight * 0.5 - (paragraph?.getHeight() || canvasHeight * 0.65) / 2}
-                            width={canvasWidth * 0.5}
+                            width={canvasWidth * 0.48}
                         />
                     </>
                 )}

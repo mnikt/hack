@@ -76,8 +76,8 @@ export default function ChallengePage() {
                 <Text style={styles.title}>{challenge.name}</Text>
                 <Text style={styles.description}>{challenge.description}</Text>
                 <View style={styles.detailsContainer}>
-                    <Text style={styles.detailsText}>Typ: {challenge.type}</Text>
-                    <Text style={styles.detailsText}>Powtarzanie: {challenge.period}</Text>
+                    <Text style={styles.detailsText}>Typ potwierdzenia: {challenge.type}</Text>
+                    <Text style={styles.detailsText}>Powtarzalność: {challenge.period}</Text>
                     <Text style={styles.detailsText}>Punkty: {challenge.points}</Text>
                     <Text style={styles.detailsText}>Początek: {challenge.start_date}</Text>
                     <Text style={styles.detailsText}>Koniec: {challenge.end_date}</Text>
