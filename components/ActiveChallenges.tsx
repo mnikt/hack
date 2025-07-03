@@ -55,7 +55,7 @@ export default function ActiveChallenges() {
                     <TouchableOpacity onPress={() => router.push(`/challenge?id=${challenge.id}`)}>
                         <Text style={styles.challengeName}>{challenge.name}</Text>
                         <View style={styles.progressBar}>
-                            <View style={[styles.progressFill, {width: '2%'}]}/>
+                            <View style={[styles.progressFill, {width: challenge.user_challenge.completed ? '100%' : '2%'}]}/>
                         </View>
                     </TouchableOpacity>
                 </View>
